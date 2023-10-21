@@ -4,7 +4,7 @@ module.exports = [
   {
     entry: './src/login.js',
     output: {
-      path: path.join(__dirname, '../oxygen-account/src/main/resources/static/app'),
+      path: path.join(__dirname, '../backend/src/main/resources/static/app'),
       filename: 'login.js',
     },
     mode: "development",
@@ -31,7 +31,7 @@ module.exports = [
   {
     entry: './src/profile.js',
     output: {
-      path: path.join(__dirname, '../oxygen-account/src/main/resources/static/app'),
+      path: path.join(__dirname, '../backend/src/main/resources/static/app'),
       filename: 'profile.js',
     },
     mode: "development",
