@@ -6,7 +6,7 @@ import { Grid, TextField, Button, LinearProgress, Typography } from "@mui/materi
 
 import { useState, useContext } from "react";
 
-import UserContext from "./UserContext.jsx";
+import UserContext from "../context/UserContext.jsx";
 
 
 export default function GeneralSection({ showMessage }) {

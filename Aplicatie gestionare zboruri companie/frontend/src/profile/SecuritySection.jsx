@@ -4,7 +4,7 @@ import { useState, useContext } from "react";
 
 import { Grid, TextField, Button, Typography, LinearProgress } from "@mui/material";
 
-import UserContext from "./UserContext.jsx";
+import UserContext from "../context/UserContext.jsx";
 
 export default function SecuritySection({ showMessage }) {
     // State variable indicating whether the change password view is active or not.

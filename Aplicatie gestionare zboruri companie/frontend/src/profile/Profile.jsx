@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import AppHeader from "../shared/AppHeader.jsx";
 import ProfileCard from "./ProfileCard.jsx";
 import { Grid, LinearProgress } from "@mui/material";
-import UserContext from "./UserContext.jsx";
+import UserContext from "../context/UserContext.jsx";
 
 /**
  * This component displays the user's profile information.

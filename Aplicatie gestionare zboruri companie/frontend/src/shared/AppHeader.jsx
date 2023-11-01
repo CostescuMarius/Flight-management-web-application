@@ -3,7 +3,7 @@ import { AppBar, Typography, Toolbar, Button, Grid, Tooltip, IconButton, Menu, M
 
 import UserAvatar from "./UserAvatar.jsx";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import UserContext from '../profile/UserContext.jsx';
+import UserContext from '../context/UserContext.jsx';
 
 import { useState, useContext } from 'react';
 /**
@@ -54,7 +54,7 @@ function AppHeader({ showLogoutButton }) {
                                 variant="h6"
                                 align='center'
                                 style={{ color: 'black' }}>
-                                Your Account
+                                Plane Tickets
                             </Typography>
                         </Grid>
                     </Grid>

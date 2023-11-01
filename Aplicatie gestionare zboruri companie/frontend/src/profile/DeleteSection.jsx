@@ -7,7 +7,7 @@ import {
     DialogContent, DialogActions, TextField, Button, LinearProgress
 } from "@mui/material";
 
-import UserContext from "./UserContext.jsx";
+import UserContext from "../context/UserContext.jsx";
 
 // The number of milliseconds in a day.
 const MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24;
