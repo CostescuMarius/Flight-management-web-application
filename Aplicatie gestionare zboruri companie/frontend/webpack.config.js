@@ -53,5 +53,32 @@ module.exports = [
         },
       ],
     },
+  },
+
+  {
+    entry: './src/employee.js',
+    output: {
+      path: path.join(__dirname, '../backend/src/main/resources/static/app'),
+      filename: 'employee.js',
+    },
+    mode: "development",
+    module: {
+      rules: [
+        {
+          test: /\.(js|jsx)$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env', '@babel/preset-react'],
+            },
+          },
+        },
+        {
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader'],
+        },
+      ],
+    },
   }
 ];
