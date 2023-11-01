@@ -73,6 +73,7 @@ public class UserService {
 		newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 		newUser.setRegistrationDate(DateUtility.getCurrentUTCTimestamp());
 		newUser.setStatus(UserStatus.NEW.getStatus());
+		newUser.setRole("CUSTOMER");
 		
 		newUser = userRepository.save(newUser);
 		

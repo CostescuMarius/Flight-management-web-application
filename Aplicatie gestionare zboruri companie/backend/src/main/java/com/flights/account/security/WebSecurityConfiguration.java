@@ -1,5 +1,7 @@
 package com.flights.account.security;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,6 +9,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -66,13 +69,31 @@ public class WebSecurityConfiguration {
 		.authorizeHttpRequests(authz->authz
 				.requestMatchers("/api/users/register", "/api/users/me", "/api/users/confirm").permitAll()
 				.anyRequest().authenticated())
-		.formLogin(form -> form
-				.loginPage("/login")
-				.usernameParameter("email")
-			    .passwordParameter("password")
-			    .failureHandler(authenticationFailureHandler())
-				.permitAll())
-		.logout(logout -> logout.logoutSuccessUrl("/login"));
+//		.formLogin(form -> form
+//				.loginPage("/login")
+//				.usernameParameter("email")
+//			    .passwordParameter("password")
+//			    .failureHandler(authenticationFailureHandler())
+//				.permitAll())
+//		.logout(logout -> logout.logoutSuccessUrl("/login"));
+        .formLogin(form -> form
+                .loginPage("/login")
+                .usernameParameter("email")
+                .passwordParameter("password")
+                .failureHandler(authenticationFailureHandler())
+                .successHandler((request, response, authentication) -> {
+                    Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+                    if (roles.contains("CUSTOMER")) {
+                        response.sendRedirect("/profile");
+                    } else if (roles.contains("EMPLOYEE")) {
+                        response.sendRedirect("/employee");
+                    } else {
+                        response.sendRedirect("/profile");
+                    }
+                })
+                .permitAll()
+            )
+            .logout(logout -> logout.logoutSuccessUrl("/login"));
 
 		return http.build();
 	}

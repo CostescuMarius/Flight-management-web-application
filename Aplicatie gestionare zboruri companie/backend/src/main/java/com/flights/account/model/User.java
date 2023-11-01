@@ -71,4 +71,7 @@ public class User {
 	 */
 	@Column(name = "deletion_date")
 	private Timestamp deletionDate;
+	
+	@Column(name = "role")
+	private String role;
 }
