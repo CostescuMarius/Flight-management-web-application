@@ -32,15 +32,15 @@ export default function AirportSection({ showMessage }) {
     ];
 
     return (
-        <Grid item container direction='column' style={{ borderTop: "1px solid #333" }} gap='10px'>
-            <Grid item style={{ padding: '10px' }}>
-                <Typography variant="h6">
-                    Airport
-                </Typography>
-            </Grid>
-
+        <Grid item container direction='column' gap='20px'>
             {(isAddAirportActive) ? (
-                <Grid container direction="column" gap='7px'>
+                <Grid item container direction="column" gap='12px'>
+                    <Grid item>
+                        <Typography variant="subtitle1">
+                            Add Airport
+                        </Typography>
+                    </Grid>
+
                     <Grid item>
                         <TextField
                             label="Name"
@@ -90,15 +90,20 @@ export default function AirportSection({ showMessage }) {
                 <Grid item>
                     <Button
                         variant="contained"
-                        onClick={handleAddClick}
-                        style={{marginLeft:'20px'}}>
+                        onClick={handleAddClick}>
                         Add Airport
                     </Button>
                 </Grid>
             )}
 
             {(isDeleteAirportActive) ? (
-                <Grid container direction="column" gap='7px'>
+                <Grid item container direction="column" gap='12px'>
+                    <Grid item>
+                        <Typography variant="subtitle1">
+                            Delete Airport
+                        </Typography>
+                    </Grid>
+                    
                     <Grid item>
                         <Autocomplete
                             disablePortal
@@ -136,8 +141,7 @@ export default function AirportSection({ showMessage }) {
                 <Grid item>
                     <Button
                         variant="contained"
-                        onClick={handleDeleteClick}
-                        style={{marginLeft:'20px'}}>
+                        onClick={handleDeleteClick}>
                         Delete Plane
                     </Button>
                 </Grid>

@@ -32,15 +32,14 @@ export default function PlaneSection({ showMessage }) {
     ];
 
     return (
-        <Grid item container direction='column' gap='10px'>
-            <Grid item style={{ padding: '10px' }}>
-                <Typography variant="h6">
-                    Plane
-                </Typography>
-            </Grid>
-
+        <Grid item container direction='column' gap='20px'>
             {(isAddPlaneActive) ? (
-                <Grid container direction="column" gap='7px'>
+                <Grid item container direction="column" gap='12px'>
+                    <Grid item>
+                        <Typography variant="subtitle1">
+                            Add Plane
+                        </Typography>
+                    </Grid>
                     <Grid item>
                         <TextField
                             label="Name"
@@ -90,15 +89,19 @@ export default function PlaneSection({ showMessage }) {
                 <Grid item>
                     <Button
                         variant="contained"
-                        onClick={handleAddClick}
-                        style={{marginLeft:'20px'}}>
+                        onClick={handleAddClick}>
                         Add Plane
                     </Button>
                 </Grid>
             )}
 
             {(isDeletePlaneActive) ? (
-                <Grid container direction="column" gap='7px'>
+                <Grid item container direction="column" gap='12px'>
+                    <Grid item>
+                        <Typography variant="subtitle1">
+                            Delete Plane
+                        </Typography>
+                    </Grid>
                     <Grid item>
                         <Autocomplete
                             disablePortal
@@ -136,8 +139,7 @@ export default function PlaneSection({ showMessage }) {
                 <Grid item>
                     <Button
                         variant="contained"
-                        onClick={handleDeleteClick}
-                        style={{marginLeft:'20px'}}>
+                        onClick={handleDeleteClick}>
                         Delete Plane
                     </Button>
                 </Grid>
