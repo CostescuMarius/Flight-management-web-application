@@ -11,7 +11,7 @@ import AirportSection from './AirportSection.jsx';
 import TicketSection from './TicketSection.jsx';
 
 
-function EmployeeCard({ refreshPlanes, refreshAirports, refreshFlights }) {
+function EmployeeCard({ refreshPlanes, refreshAirports, refreshFlights, refreshTickets }) {
     const [showSnackbar, setShowSnackbar] = useState(false);
 
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -50,6 +50,11 @@ function EmployeeCard({ refreshPlanes, refreshAirports, refreshFlights }) {
         refreshFlights();
     }
 
+    const refreshTicketsDetails = () => {
+        refreshTickets();
+    }
+    
+
     const handleChange = (panel) => (event, newExpanded) => {
         setExpanded(newExpanded ? panel : false);
     };
@@ -76,6 +81,7 @@ function EmployeeCard({ refreshPlanes, refreshAirports, refreshFlights }) {
                                             showMessage={showMessage}
                                             refreshPlanes = {refreshPlanesName}
                                             refreshFlights = {refreshFlightsDetails}
+                                            refreshTickets={refreshTicketsDetails}
                                         />}
                                     </AccordionDetails>
                                 </Accordion>
@@ -91,6 +97,7 @@ function EmployeeCard({ refreshPlanes, refreshAirports, refreshFlights }) {
                                             showMessage={showMessage} 
                                             refreshAirports = {refreshAirportsName}
                                             refreshFlights = {refreshFlightsDetails}
+                                            refreshTickets={refreshTicketsDetails}
                                         />}
                                     </AccordionDetails>
                                 </Accordion>
@@ -105,6 +112,7 @@ function EmployeeCard({ refreshPlanes, refreshAirports, refreshFlights }) {
                                         {<FlightSection 
                                             showMessage={showMessage} 
                                             refreshFlights={refreshFlightsDetails}
+                                            refreshTickets={refreshTicketsDetails}
                                         />}
                                     </AccordionDetails>
                                 </Accordion>
@@ -116,7 +124,10 @@ function EmployeeCard({ refreshPlanes, refreshAirports, refreshFlights }) {
                                         <Typography sx={{ fontWeight: 'bold' }}>Ticket Section</Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        {<TicketSection showMessage={showMessage} />}
+                                        {<TicketSection 
+                                            showMessage={showMessage}
+                                            refreshTickets={refreshTicketsDetails}
+                                        />}
                                     </AccordionDetails>
                                 </Accordion>
                             </Grid>

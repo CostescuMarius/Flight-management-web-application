@@ -9,7 +9,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 import CompanyContext from "../context/CompanyContext.jsx";
 
-export default function FlightSection({ showMessage, refreshFlights }) {
+export default function FlightSection({ showMessage, refreshFlights, refreshTickets }) {
     const [isAddFlightActive, setIsAddFlightActive] = useState(false);
     const [isDeleteFlightActive, setIsDeleteFlightActive] = useState(false);
     const [isUpdateFlightActive, setIsUpdateFlightActive] = useState(false);
@@ -164,6 +164,7 @@ export default function FlightSection({ showMessage, refreshFlights }) {
     const handleSaveUpdateClick = async () => {
         await sendUpdateFlightRequest()
         refreshFlights();
+        refreshTickets();
     }
 
     const sendDeleteFlightRequest = () => {
@@ -209,6 +210,7 @@ export default function FlightSection({ showMessage, refreshFlights }) {
     const handleSaveDeleteClick = async () => {
         await sendDeleteFlightRequest()
         refreshFlights();
+        refreshTickets();
     }
 
     const handleDepartureDateChange = (newDate) => {
@@ -453,7 +455,7 @@ export default function FlightSection({ showMessage, refreshFlights }) {
                     </Grid>
                 )}
 
-                {isUpdateFlightActive &&
+                {isUpdateLoading &&
                     <Grid item xs>
                         <LinearProgress />
                     </Grid>
@@ -508,7 +510,7 @@ export default function FlightSection({ showMessage, refreshFlights }) {
                     </Grid>
                 )}
 
-                {isDeleteFlightActive &&
+                {isDeleteLoading &&
                     <Grid item xs>
                         <LinearProgress />
                     </Grid>

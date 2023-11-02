@@ -7,7 +7,7 @@ import { Grid, TextField, Button, Typography, LinearProgress, Autocomplete } fro
 import CompanyContext from "../context/CompanyContext.jsx";
 
 
-export default function AirportSection({ showMessage, refreshAirports, refreshFlights }) {
+export default function AirportSection({ showMessage, refreshAirports, refreshFlights, refreshTickets }) {
     const [isAddAirportActive, setIsAddAirportActive] = useState(false);
     const [isDeleteAirportActive, setIsDeleteAirportActive] = useState(false);
 
@@ -133,6 +133,7 @@ export default function AirportSection({ showMessage, refreshAirports, refreshFl
         await sendDeleteAirportRequest();
         refreshAirports();
         refreshFlights();
+        refreshTickets();
     }
 
     return (
@@ -249,7 +250,7 @@ export default function AirportSection({ showMessage, refreshAirports, refreshFl
                     <Button
                         variant="contained"
                         onClick={handleDeleteClick}>
-                        Delete Plane
+                        Delete Airport
                     </Button>
                 </Grid>
             )}

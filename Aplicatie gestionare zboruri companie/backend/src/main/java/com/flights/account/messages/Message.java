@@ -106,7 +106,9 @@ public enum Message {
 	
 	AIRPORT_NOT_FOUND("AIRPORT_NOT_FOUND", "The airport with this name was not found."),
 	
-	FLIGHT_NOT_FOUND("FLIGHT_NOT_FOUND", "The flight was not found.");
+	FLIGHT_NOT_FOUND("FLIGHT_NOT_FOUND", "The flight was not found."), 
+	
+	TICKET_NOT_FOUND("TICKET_NOT_FOUND", "The flight was not found.");
 
 	/**
 	 * Unique identifier corresponding to each type of message.

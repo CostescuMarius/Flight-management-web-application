@@ -73,4 +73,12 @@ public class FlightService {
 
         return airportsName;
     }
+    
+    public Flight getFlightById(int id) {
+    	if(!flightRepository.existsById(id)) {
+    		throw new AccountException(Message.FLIGHT_NOT_FOUND, HttpStatus.CONFLICT, InternalErrorCode.EMAIL_ALREADY_EXISTS);
+    	}
+    	
+    	return flightRepository.findById(id);
+    }
 }

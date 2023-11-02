@@ -17,6 +17,7 @@ export default function Employee() {
   const [allPlanesName, setAllPlanesName] = useState(null);
   const [allAirportsName, setAllAirportsName] = useState(null);
   const [allFlightsDetails, setAllFlightsDetails] = useState(null);
+  const [allTicketsDetails, setAllTicketsDetails] = useState(null);
 
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -107,6 +108,25 @@ export default function Employee() {
     });
   }
 
+  const getAllTicketsDetails = () => {
+
+    fetch('api/tickets/details', {
+      method: 'GET'
+    }).then((response) => {
+      return response.json();
+    }).then((data) => {
+      if (data.errorMessage) {
+        throw new Error(data.errorMessage);
+      }
+
+      setAllTicketsDetails(data);
+    }).catch(error => {
+      setSnackbarMessage(error.message);
+
+      setShowSnackbar(true);
+    });
+  }
+
   /**
   * Fetch user data on component mount
   */
@@ -115,6 +135,7 @@ export default function Employee() {
     getAllPlanesName();
     getAllAirportsName();
     getAllFlightsDetails();
+    getAllTicketsDetails();
   }, []);
 
   const refreshPlanes = () => {
@@ -129,6 +150,10 @@ export default function Employee() {
     getAllFlightsDetails();
   }
 
+  const refreshTickets = () => {
+    getAllTicketsDetails();
+  }
+
   return (
     <Grid container direction="column">
       <UserContext.Provider value={{ currentUserData }}>
@@ -138,12 +163,13 @@ export default function Employee() {
         </Grid>
       </UserContext.Provider>
 
-      <CompanyContext.Provider value={{ allPlanesName, allAirportsName, allFlightsDetails }}>
+      <CompanyContext.Provider value={{ allPlanesName, allAirportsName, allFlightsDetails, allTicketsDetails }}>
         <Grid item container>
           <EmployeeCard 
             refreshPlanes={refreshPlanes} 
             refreshAirports={refreshAirports}
             refreshFlights={refreshFlights}
+            refreshTickets={refreshTickets}
           />
         </Grid>
       </CompanyContext.Provider>

@@ -6,7 +6,7 @@ import { Grid, TextField, Button, Typography, LinearProgress, Autocomplete } fro
 
 import CompanyContext from "../context/CompanyContext.jsx";
 
-export default function PlaneSection({ showMessage, refreshPlanes, refreshFlights }) {
+export default function PlaneSection({ showMessage, refreshPlanes, refreshFlights, refreshTickets }) {
     const [isAddPlaneActive, setIsAddPlaneActive] = useState(false);
     const [isDeletePlaneActive, setIsDeletePlaneActive] = useState(false);
 
@@ -140,6 +140,7 @@ export default function PlaneSection({ showMessage, refreshPlanes, refreshFlight
         await sendDeletePlaneRequest();
         refreshPlanes();
         refreshFlights();
+        refreshTickets();
     }
 
     return (
