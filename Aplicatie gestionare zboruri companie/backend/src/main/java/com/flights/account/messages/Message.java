@@ -98,9 +98,13 @@ public enum Message {
 	
 	PLANE_ALREADY_EXISTS("PLANE_ALREADY_EXISTS", "A plane with this name already exists."),
 	
-	PLANE_NOT_FOUND("PLANE_NOT_FOUND", "Plane with this name was not found."),
+	PLANE_NOT_FOUND("PLANE_NOT_FOUND", "The plane with this name was not found."),
 	
-	MIN_VALUE("MIN_VALUE", "Plane capacity cannot be 0.");
+	MIN_VALUE("MIN_VALUE", "Plane capacity cannot be 0."),
+	
+	AIRPORT_ALREADY_EXISTS("AIRPORT_ALREADY_EXISTS", "An airport with this name already exists."),
+	
+	AIRPORT_NOT_FOUND("AIRPORT_NOT_FOUND", "The airport with this name was not found.");
 
 	/**
 	 * Unique identifier corresponding to each type of message.

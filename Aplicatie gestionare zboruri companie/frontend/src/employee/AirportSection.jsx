@@ -1,15 +1,36 @@
 import React from "react";
 
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import { Grid, TextField, Button, Typography, LinearProgress, Autocomplete } from "@mui/material";
 
+import CompanyContext from "../context/CompanyContext.jsx";
 
-export default function AirportSection({ showMessage }) {
+
+export default function AirportSection({ showMessage, refreshAirports }) {
     const [isAddAirportActive, setIsAddAirportActive] = useState(false);
     const [isDeleteAirportActive, setIsDeleteAirportActive] = useState(false);
 
-    const [isLoading, setIsLoading] = useState(false);
+    const [addedAirportName, setAddedAirportName] = useState('');
+    const [addedAirportLocation, setAddedAirportLocation] = useState('');
+
+    const [deletedAirportName, setDeletedAirportName] = useState('');
+
+    const [isAddLoading, setIsAddLoading] = useState(false);
+    const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+
+    const companyContext = useContext(CompanyContext);
+    const allAirportsName = companyContext.allAirportsName;
+
+    const handleInputChange = (event) => {
+        const { id, value } = event.target;
+
+        if (id === "add-name") {
+            setAddedAirportName(value);
+        } else if (id === "location") {
+            setAddedAirportLocation(value);
+        }
+    }
 
     const handleAddClick = () => {
         setIsAddAirportActive(true);
@@ -27,9 +48,91 @@ export default function AirportSection({ showMessage }) {
         setIsDeleteAirportActive(false);
     }
 
-    const options = [
-        { label: 'Option X' },
-    ];
+    const sendAddAirportRequest = () => {
+        setIsAddLoading(true);
+
+        const airportInfo = {
+            name: addedAirportName.trim(),
+            location: addedAirportLocation.trim(),
+        };
+
+        return fetch('api/airports/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(airportInfo),
+        }).then((response) => {
+            if (response.ok) {
+                setIsAddLoading(false);
+                setIsAddAirportActive(false);
+                setAddedAirportName('');
+                setAddedAirportLocation('');
+
+                showMessage(true, 'The airport has been added successfully');
+            }
+            return response.json();
+        }).then((data) => {
+            if (data.errors) {
+                throw new Error(data.errors[0].errorMessage); 
+            } else if (data.errorMessage) {
+                throw new Error(data.errorMessage);
+            }
+        }).catch(error => {
+            setIsAddLoading(false);
+
+            showMessage(false, error.name == "TypeError" ? "The connection could not be established." : error.message);
+        })
+    };
+
+    const handleSaveAddClick = async () => {
+        await sendAddAirportRequest()
+        refreshAirports();
+    }
+
+    const sendDeleteAirportRequest = () => {
+        setIsDeleteLoading(true);
+
+        const deletedAirportInfo = {
+            name: deletedAirportName.trim(),
+        };
+
+        return fetch('api/airports/delete', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(deletedAirportInfo),
+        }).then((response) => {
+            if (response.status === 200 || response.status === 204) {
+                setIsDeleteLoading(false);
+                setIsDeleteAirportActive(false);
+                setDeletedAirportName('');
+
+                showMessage(true, 'The airport has been deleted successfully');
+            } else {
+                return response.json();
+            }
+
+        }).then((data) => {
+            if(data) {
+                if (data.errors) {
+                    throw new Error(data.errors[0].errorMessage); 
+                } else if (data.errorMessage) {
+                    throw new Error(data.errorMessage);
+                }
+            }
+        }).catch(error => {
+            setIsDeleteLoading(false);
+
+            showMessage(false, error.name == "TypeError" ? "The connection could not be established." : error.message);
+        })
+    };
+
+    const handleSaveDeleteClick = async () => {
+        await sendDeleteAirportRequest();
+        refreshAirports();
+    }
 
     return (
         <Grid item container direction='column' gap='20px'>
@@ -43,24 +146,22 @@ export default function AirportSection({ showMessage }) {
 
                     <Grid item>
                         <TextField
+                            id="add-name"
                             label="Name"
                             variant="outlined"
-                            //value={currentPassword}
-                            //onChange={handleInputChange}
-                            //error={Boolean(currentPasswordError)}
-                            //helperText={currentPasswordError}
+                            value={addedAirportName}
+                            onChange={handleInputChange}
                             fullWidth
                         />
                     </Grid>
 
                     <Grid item>
                         <TextField
+                            id="location"
                             label="Location"
                             variant="outlined"
-                            //value={currentPassword}
-                            //onChange={handleInputChange}
-                            //error={Boolean(currentPasswordError)}
-                            //helperText={currentPasswordError}
+                            value={addedAirportLocation}
+                            onChange={handleInputChange}
                             fullWidth
                         />
                     </Grid>
@@ -77,9 +178,9 @@ export default function AirportSection({ showMessage }) {
 
                         <Grid item>
                             <Button
-                                //disabled={currentPassword === '' || newPassword === '' || confirmNewPassword === ''}
+                                disabled={addedAirportName === '' || addedAirportLocation === ''}
                                 variant="contained"
-                            //onClick={handleSaveAddClick}
+                                onClick={handleSaveAddClick}
                             >
                                 Add
                             </Button>
@@ -96,6 +197,12 @@ export default function AirportSection({ showMessage }) {
                 </Grid>
             )}
 
+            {isAddLoading &&
+                <Grid item xs>
+                    <LinearProgress />
+                </Grid>
+            }
+
             {(isDeleteAirportActive) ? (
                 <Grid item container direction="column" gap='12px'>
                     <Grid item>
@@ -106,12 +213,11 @@ export default function AirportSection({ showMessage }) {
                     
                     <Grid item>
                         <Autocomplete
-                            disablePortal
                             fullWidth
-                            options={options}
-                            getOptionLabel={(option) => option.label}
+                            onChange={(event, value) => setDeletedAirportName(value || '')}
+                            options={allAirportsName || []}
                             renderInput={(params) => (
-                                <TextField {...params} label="Deleted Airport" variant="outlined" />
+                                <TextField {...params} label="Deleted Plane" variant="outlined" />
                             )}
                         />
                     </Grid>
@@ -128,9 +234,9 @@ export default function AirportSection({ showMessage }) {
 
                         <Grid item>
                             <Button
-                                //disabled={currentPassword === '' || newPassword === '' || confirmNewPassword === ''}
+                                disabled={deletedAirportName === ''}
                                 variant="contained"
-                                //onClick={handleSaveDeleteClick}
+                                onClick={handleSaveDeleteClick}
                                 color="error">
                                 Delete
                             </Button>
@@ -146,6 +252,12 @@ export default function AirportSection({ showMessage }) {
                     </Button>
                 </Grid>
             )}
+
+            {isDeleteLoading &&
+                <Grid item xs>
+                    <LinearProgress />
+                </Grid>
+            }
         </Grid>
 
 

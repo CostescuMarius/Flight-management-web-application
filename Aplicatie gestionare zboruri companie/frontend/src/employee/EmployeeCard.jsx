@@ -11,7 +11,7 @@ import AirportSection from './AirportSection.jsx';
 import TicketSection from './TicketSection.jsx';
 
 
-function EmployeeCard({ refreshPlanes }) {
+function EmployeeCard({ refreshPlanes, refreshAirports }) {
     const [showSnackbar, setShowSnackbar] = useState(false);
 
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -38,8 +38,12 @@ function EmployeeCard({ refreshPlanes }) {
         setShowSnackbar(true);
     }
 
-    const refreshPlaneNames = () => {
+    const refreshPlanesName = () => {
         refreshPlanes();
+    }
+
+    const refreshAirportsName = () => {
+        refreshAirports();
     }
 
     const handleChange = (panel) => (event, newExpanded) => {
@@ -66,7 +70,7 @@ function EmployeeCard({ refreshPlanes }) {
                                     <AccordionDetails>
                                         {<PlaneSection
                                             showMessage={showMessage}
-                                            refreshPlanes = { refreshPlaneNames } 
+                                            refreshPlanes = {refreshPlanesName}
                                         />}
                                     </AccordionDetails>
                                 </Accordion>
@@ -78,7 +82,10 @@ function EmployeeCard({ refreshPlanes }) {
                                         <Typography sx={{ fontWeight: 'bold' }}>Airport Section</Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        {<AirportSection showMessage={showMessage} />}
+                                        {<AirportSection 
+                                            showMessage={showMessage} 
+                                            refreshAirports = {refreshAirportsName}
+                                        />}
                                     </AccordionDetails>
                                 </Accordion>
                             </Grid>

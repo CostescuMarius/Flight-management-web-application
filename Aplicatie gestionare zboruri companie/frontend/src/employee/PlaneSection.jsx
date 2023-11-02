@@ -4,7 +4,7 @@ import { useState, useContext } from "react";
 
 import { Grid, TextField, Button, Typography, LinearProgress, Autocomplete } from "@mui/material";
 
-import PlaneContext from "../context/PlaneContext.jsx";
+import CompanyContext from "../context/CompanyContext.jsx";
 
 export default function PlaneSection({ showMessage, refreshPlanes }) {
     const [isAddPlaneActive, setIsAddPlaneActive] = useState(false);
@@ -16,8 +16,8 @@ export default function PlaneSection({ showMessage, refreshPlanes }) {
     const [isAddLoading, setIsAddLoading] = useState(false);
     const [isDeleteLoading, setIsDeleteLoading] = useState(false);
 
-    const planeContext = useContext(PlaneContext);
-    const allPlanesName = planeContext.allPlanesName;
+    const companyContext = useContext(CompanyContext);
+    const allPlanesName = companyContext.allPlanesName;
     
     const [deletedPlaneName, setDeletedPlaneName] = useState('');
 
@@ -111,8 +111,7 @@ export default function PlaneSection({ showMessage, refreshPlanes }) {
             },
             body: JSON.stringify(deletedPlaneInfo),
         }).then((response) => {
-            if (response.status === 200|| response.status === 204) {
-                console.log(1);
+            if (response.status === 200 || response.status === 204) {
                 setIsDeleteLoading(false);
                 setIsDeletePlaneActive(false);
                 setDeletedPlaneName('');
@@ -216,6 +215,7 @@ export default function PlaneSection({ showMessage, refreshPlanes }) {
                             Delete Plane
                         </Typography>
                     </Grid>
+
                     <Grid item>
                         <Autocomplete
                             id='deleted-name'

@@ -7,13 +7,15 @@ import UserContext from "../context/UserContext.jsx";
 import { Grid, Snackbar, Alert } from "@mui/material";
 import EmployeeCard from "./EmployeeCard.jsx";
 
-import PlaneContext from "../context/PlaneContext.jsx";
+import CompanyContext from "../context/CompanyContext.jsx";
 
 
 export default function Employee() {
   // State variable for holding user data
   const [currentUserData, setCurrentUserData] = useState(null);
+
   const [allPlanesName, setAllPlanesName] = useState(null);
+  const [allAirportsName, setAllAirportsName] = useState(null);
 
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -66,16 +68,40 @@ export default function Employee() {
     });
   }
 
+  const getAllAirportsName = () => {
+
+    fetch('api/airports/names', {
+      method: 'GET'
+    }).then((response) => {
+      return response.json();
+    }).then((data) => {
+      if (data.errorMessage) {
+        throw new Error(data.errorMessage);
+      }
+
+      setAllAirportsName(data);
+    }).catch(error => {
+      setSnackbarMessage(error.message);
+
+      setShowSnackbar(true);
+    });
+  }
+
   /**
   * Fetch user data on component mount
   */
   useEffect(() => {
     getUserCurrentData();
     getAllPlanesName();
+    getAllAirportsName();
   }, []);
 
   const refreshPlanes = () => {
     getAllPlanesName();
+  }
+
+  const refreshAirports = () => {
+    getAllAirportsName();
   }
 
   return (
@@ -87,11 +113,14 @@ export default function Employee() {
         </Grid>
       </UserContext.Provider>
 
-      <PlaneContext.Provider value={{ allPlanesName }}>
+      <CompanyContext.Provider value={{ allPlanesName, allAirportsName }}>
         <Grid item container>
-          <EmployeeCard refreshPlanes={refreshPlanes} />
+          <EmployeeCard 
+            refreshPlanes={refreshPlanes} 
+            refreshAirports={refreshAirports}
+          />
         </Grid>
-      </PlaneContext.Provider>
+      </CompanyContext.Provider>
 
       {showSnackbar &&
         <Grid item>

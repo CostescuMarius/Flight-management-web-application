@@ -16,9 +16,6 @@ import com.flights.account.repository.PlaneRepository;
 
 import lombok.AllArgsConstructor;
 
-/**
- *  Service class for user-related operations.
- */
 @Service
 @AllArgsConstructor
 public class PlaneService {
@@ -52,15 +49,15 @@ public class PlaneService {
         planeRepository.delete(planeToDelete);
     }
 	
-    public List<String> getAllPlaneNames() {
+    public List<String> getAllPlanesName() {
     	List<Plane> planes = planeRepository.findAll();
 
-    	List<String> planeNames = new ArrayList<>();
+    	List<String> planesName = new ArrayList<>();
 
         for (Plane plane : planes) {
-            planeNames.add(plane.getName());
+            planesName.add(plane.getName());
         }
 
-        return planeNames;
+        return planesName;
     }
 }

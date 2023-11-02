@@ -53,7 +53,7 @@ public class PlaneController {
 
 	@GetMapping("/names")
 	public List<String> getAllPlanes() {
-		return planeService.getAllPlaneNames();
+		return planeService.getAllPlanesName();
 	}
     
 }
