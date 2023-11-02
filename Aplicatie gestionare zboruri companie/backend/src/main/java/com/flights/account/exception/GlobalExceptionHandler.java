@@ -26,6 +26,17 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(errorResponse, exception.getStatus());
 	}
 	
+	@ExceptionHandler(PlaneException.class)
+	public ResponseEntity<ErrorResponse> handleAccountExceptions(PlaneException exception) {
+		ErrorResponse errorResponse = new ErrorResponse();
+		
+		errorResponse.setInternalErrorCode(exception.getErrorCode().getInternalErrorCode());
+		errorResponse.setErrorMessage(exception.getMessage());
+		errorResponse.setMessageId(exception.getMessageId());
+		
+		return new ResponseEntity<>(errorResponse, exception.getStatus());
+	}
+	
 	/**
 	 * Method handles MultipleAccountException that may be thrown during the execution of HTTP request
 	 * @param exception the instance of MultipleAccountException that has been thrown.

@@ -1,15 +1,35 @@
 import React from "react";
 
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import { Grid, TextField, Button, Typography, LinearProgress, Autocomplete } from "@mui/material";
 
+import PlaneContext from "../context/PlaneContext.jsx";
 
-export default function PlaneSection({ showMessage }) {
+export default function PlaneSection({ showMessage, refreshPlanes }) {
     const [isAddPlaneActive, setIsAddPlaneActive] = useState(false);
     const [isDeletePlaneActive, setIsDeletePlaneActive] = useState(false);
 
-    const [isLoading, setIsLoading] = useState(false);
+    const [addedPlaneName, setAddedPlaneName] = useState('');
+    const [addedPlaneCapacity, setAddedPlaneCapacity] = useState('');
+
+    const [isAddLoading, setIsAddLoading] = useState(false);
+    const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+
+    const planeContext = useContext(PlaneContext);
+    const allPlanesName = planeContext.allPlanesName;
+    
+    const [deletedPlaneName, setDeletedPlaneName] = useState('');
+
+    const handleInputChange = (event) => {
+        const { id, value } = event.target;
+
+        if (id === "name") {
+            setAddedPlaneName(value);
+        } else if (id === "capacity") {
+            setAddedPlaneCapacity(value);
+        }
+    }
 
     const handleAddClick = () => {
         setIsAddPlaneActive(true);
@@ -20,6 +40,12 @@ export default function PlaneSection({ showMessage }) {
     }
 
     const handleCancelAddClick = () => {
+        if(addedPlaneName !== '') {
+            setAddedPlaneName('');
+        }
+        if(addedPlaneCapacity !== '') {
+            setAddedPlaneCapacity('');
+        }
         setIsAddPlaneActive(false);
     }
 
@@ -27,9 +53,94 @@ export default function PlaneSection({ showMessage }) {
         setIsDeletePlaneActive(false);
     }
 
-    const options = [
-        { label: 'Option X' },
-    ];
+    const sendAddPlaneRequest = () => {
+        setIsAddLoading(true);
+
+        const planeInfo = {
+            name: addedPlaneName.trim(),
+            capacity: addedPlaneCapacity.trim(),
+        };
+
+        return fetch('api/planes/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(planeInfo),
+        }).then((response) => {
+            if (response.ok) {
+                setIsAddLoading(false);
+                setIsAddPlaneActive(false);
+                setAddedPlaneName('');
+                setAddedPlaneCapacity('');
+
+                showMessage(true, 'The plane has been added successfully');
+            }
+            return response.json();
+        }).then((data) => {
+            if(data.error) {
+                throw new Error('Capacity must be a number');
+            } else if (data.errors) {
+                throw new Error(data.errors[0].errorMessage); 
+            } else if (data.errorMessage) {
+                throw new Error(data.errorMessage);
+            }
+        }).catch(error => {
+            setIsAddLoading(false);
+
+            showMessage(false, error.name == "TypeError" ? "The connection could not be established." : error.message);
+        })
+    };
+
+    const handleSaveAddClick = async () => {
+        await sendAddPlaneRequest()
+        refreshPlanes();
+    }
+
+    const sendDeletePlaneRequest = () => {
+        setIsDeleteLoading(true);
+
+        const deletedPlaneInfo = {
+            name: deletedPlaneName.trim(),
+        };
+
+        return fetch('api/planes/delete', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(deletedPlaneInfo),
+        }).then((response) => {
+            if (response.status === 200|| response.status === 204) {
+                console.log(1);
+                setIsDeleteLoading(false);
+                setIsDeletePlaneActive(false);
+                setDeletedPlaneName('');
+
+                showMessage(true, 'The plane has been deleted successfully');
+            } else {
+                return response.json();
+            }
+
+        }).then((data) => {
+            if(data) {
+                if (data.errors) {
+                    throw new Error(data.errors[0].errorMessage); 
+                } else if (data.errorMessage) {
+                    throw new Error(data.errorMessage);
+                }
+            }
+        }).catch(error => {
+            setIsDeleteLoading(false);
+
+            showMessage(false, error.name == "TypeError" ? "The connection could not be established." : error.message);
+        })
+    };
+
+    const handleSaveDeleteClick = async () => {
+        await sendDeletePlaneRequest();
+        refreshPlanes();
+    }
 
     return (
         <Grid item container direction='column' gap='20px'>
@@ -42,24 +153,22 @@ export default function PlaneSection({ showMessage }) {
                     </Grid>
                     <Grid item>
                         <TextField
+                            id="name"
                             label="Name"
                             variant="outlined"
-                            //value={currentPassword}
-                            //onChange={handleInputChange}
-                            //error={Boolean(currentPasswordError)}
-                            //helperText={currentPasswordError}
+                            value={addedPlaneName}
+                            onChange={handleInputChange}
                             fullWidth
                         />
                     </Grid>
 
                     <Grid item>
                         <TextField
+                            id="capacity"
                             label="Capacity"
                             variant="outlined"
-                            //value={currentPassword}
-                            //onChange={handleInputChange}
-                            //error={Boolean(currentPasswordError)}
-                            //helperText={currentPasswordError}
+                            value={addedPlaneCapacity}
+                            onChange={handleInputChange}
                             fullWidth
                         />
                     </Grid>
@@ -76,10 +185,9 @@ export default function PlaneSection({ showMessage }) {
 
                         <Grid item>
                             <Button
-                                //disabled={currentPassword === '' || newPassword === '' || confirmNewPassword === ''}
+                                disabled={addedPlaneName === '' || addedPlaneCapacity === ''}
                                 variant="contained"
-                            //onClick={handleSaveAddClick}
-                            >
+                                onClick={handleSaveAddClick}>
                                 Add
                             </Button>
                         </Grid>
@@ -95,6 +203,12 @@ export default function PlaneSection({ showMessage }) {
                 </Grid>
             )}
 
+            {isAddLoading &&
+                <Grid item xs>
+                    <LinearProgress />
+                </Grid>
+            }
+
             {(isDeletePlaneActive) ? (
                 <Grid item container direction="column" gap='12px'>
                     <Grid item>
@@ -104,10 +218,10 @@ export default function PlaneSection({ showMessage }) {
                     </Grid>
                     <Grid item>
                         <Autocomplete
-                            disablePortal
+                            id='deleted-name'
                             fullWidth
-                            options={options}
-                            getOptionLabel={(option) => option.label}
+                            onChange={(event, value) => setDeletedPlaneName(value || '')}
+                            options={allPlanesName || []}
                             renderInput={(params) => (
                                 <TextField {...params} label="Deleted Plane" variant="outlined" />
                             )}
@@ -126,9 +240,9 @@ export default function PlaneSection({ showMessage }) {
 
                         <Grid item>
                             <Button
-                                //disabled={currentPassword === '' || newPassword === '' || confirmNewPassword === ''}
+                                disabled={deletedPlaneName === ''}
                                 variant="contained"
-                                //onClick={handleSaveDeleteClick}
+                                onClick={handleSaveDeleteClick}
                                 color="error">
                                 Delete
                             </Button>
@@ -144,6 +258,12 @@ export default function PlaneSection({ showMessage }) {
                     </Button>
                 </Grid>
             )}
+
+            {isDeleteLoading &&
+                <Grid item xs>
+                    <LinearProgress />
+                </Grid>
+            }
         </Grid>
 
 

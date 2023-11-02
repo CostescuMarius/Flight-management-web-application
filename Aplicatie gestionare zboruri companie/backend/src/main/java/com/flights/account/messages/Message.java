@@ -94,7 +94,13 @@ public enum Message {
 	/**
 	 * ID corresponding to the message indicating that the email is not confirmed
 	 */
-	EMAIL_NOT_CONFIRMED("EMAIL_NOT_CONFIRMED", "Email not confirmed.");
+	EMAIL_NOT_CONFIRMED("EMAIL_NOT_CONFIRMED", "Email not confirmed."),
+	
+	PLANE_ALREADY_EXISTS("PLANE_ALREADY_EXISTS", "A plane with this name already exists."),
+	
+	PLANE_NOT_FOUND("PLANE_NOT_FOUND", "Plane with this name was not found."),
+	
+	MIN_VALUE("MIN_VALUE", "Plane capacity cannot be 0.");
 
 	/**
 	 * Unique identifier corresponding to each type of message.
