@@ -28,9 +28,6 @@ public class PlaneService {
             throw new PlaneException(Message.PLANE_ALREADY_EXISTS, HttpStatus.CONFLICT, InternalErrorCode.EMAIL_ALREADY_EXISTS);
         }
 		
-		newPlane.setName(newPlane.getName());
-		newPlane.setCapacity(newPlane.getCapacity());
-		
 		newPlane = planeRepository.save(newPlane);
 		
 		return newPlane;
@@ -59,5 +56,21 @@ public class PlaneService {
         }
 
         return planesName;
+    }
+    
+    public Plane getPlaneById(int id) {
+    	if(!planeRepository.existsById(id)) {
+    		throw new PlaneException(Message.PLANE_NOT_FOUND, HttpStatus.CONFLICT, InternalErrorCode.EMAIL_ALREADY_EXISTS);
+    	}
+    	
+    	return planeRepository.findById(id);
+    }
+    
+    public Plane getPlaneByName(String name) {
+    	if(!planeRepository.existsByName(name)) {
+    		throw new PlaneException(Message.PLANE_NOT_FOUND, HttpStatus.CONFLICT, InternalErrorCode.EMAIL_ALREADY_EXISTS);
+    	}
+    	
+    	return planeRepository.findByName(name);
     }
 }

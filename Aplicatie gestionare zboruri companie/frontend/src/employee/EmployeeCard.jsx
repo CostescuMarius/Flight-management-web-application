@@ -11,7 +11,7 @@ import AirportSection from './AirportSection.jsx';
 import TicketSection from './TicketSection.jsx';
 
 
-function EmployeeCard({ refreshPlanes, refreshAirports }) {
+function EmployeeCard({ refreshPlanes, refreshAirports, refreshFlights }) {
     const [showSnackbar, setShowSnackbar] = useState(false);
 
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -46,6 +46,10 @@ function EmployeeCard({ refreshPlanes, refreshAirports }) {
         refreshAirports();
     }
 
+    const refreshFlightsDetails = () => {
+        refreshFlights();
+    }
+
     const handleChange = (panel) => (event, newExpanded) => {
         setExpanded(newExpanded ? panel : false);
     };
@@ -71,6 +75,7 @@ function EmployeeCard({ refreshPlanes, refreshAirports }) {
                                         {<PlaneSection
                                             showMessage={showMessage}
                                             refreshPlanes = {refreshPlanesName}
+                                            refreshFlights = {refreshFlightsDetails}
                                         />}
                                     </AccordionDetails>
                                 </Accordion>
@@ -85,6 +90,7 @@ function EmployeeCard({ refreshPlanes, refreshAirports }) {
                                         {<AirportSection 
                                             showMessage={showMessage} 
                                             refreshAirports = {refreshAirportsName}
+                                            refreshFlights = {refreshFlightsDetails}
                                         />}
                                     </AccordionDetails>
                                 </Accordion>
@@ -96,7 +102,10 @@ function EmployeeCard({ refreshPlanes, refreshAirports }) {
                                         <Typography sx={{ fontWeight: 'bold' }}>Flight Section</Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        {<FlightSection showMessage={showMessage} />}
+                                        {<FlightSection 
+                                            showMessage={showMessage} 
+                                            refreshFlights={refreshFlightsDetails}
+                                        />}
                                     </AccordionDetails>
                                 </Accordion>
                             </Grid>

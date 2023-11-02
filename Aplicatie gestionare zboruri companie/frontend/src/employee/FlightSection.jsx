@@ -1,20 +1,44 @@
 import React from "react";
 
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import { Grid, TextField, Button, Typography, LinearProgress, Autocomplete } from "@mui/material";
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
+import CompanyContext from "../context/CompanyContext.jsx";
 
-
-export default function FlightSection({ showMessage }) {
+export default function FlightSection({ showMessage, refreshFlights }) {
     const [isAddFlightActive, setIsAddFlightActive] = useState(false);
     const [isDeleteFlightActive, setIsDeleteFlightActive] = useState(false);
     const [isUpdateFlightActive, setIsUpdateFlightActive] = useState(false);
 
-    const [isLoading, setIsLoading] = useState(false);
+    const [planeForFlight, setPlaneForFlight] = useState('');
+    const [departureAirport, setDepartureAirport] = useState('');
+    const [arrivalAirport, setArrivalAirport] = useState('');
+    
+
+    const [isAddLoading, setIsAddLoading] = useState(false);
+    const [isUpdateLoading, setIsUpdateLoading] = useState(false);
+    const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+
+    const companyContext = useContext(CompanyContext);
+    const allPlanesName = companyContext.allPlanesName;
+    const allAirportsName = companyContext.allAirportsName;
+    const allFlightsDetails = companyContext.allFlightsDetails;
+
+    const [selectedDepartureDate, setSelectedDepartureDate] = useState('');
+    const [selectedArrivalDate, setSelectedArrivalDate] = useState('');
+
+    
+    const [modifyFlightPlane, setModifiyFlightPlane] = useState('');
+    const [updatedFlightId, setUpdatedFlightId] = useState('');
+    const [selectedModifyDepartureDate, setSelectedModifyDepartureDate] = useState('');
+    const [selectedModifyArrivalDate, setSelectedModifyArrivalDate] = useState('');
+
+    const [deletedFlightId, setDeletedFlightId] = useState('');
+
 
     const handleAddClick = () => {
         setIsAddFlightActive(true);
@@ -40,9 +64,170 @@ export default function FlightSection({ showMessage }) {
         setIsUpdateFlightActive(false);
     }
 
-    const options = [
-        { label: '-' },
-    ];
+    const sendAddFlightRequest = () => {
+        setIsAddLoading(true);
+
+        const departureTimestamp = selectedDepartureDate.toISOString();
+        const arrivalTimestamp = selectedArrivalDate.toISOString();
+
+        const flightInfo = {
+            planeName: planeForFlight.trim(),
+            departureAirportName: departureAirport.trim(),
+            arrivalAirportName: arrivalAirport.trim(),
+            departureDate: departureTimestamp,
+            arrivalDate: arrivalTimestamp,
+        };
+
+        return fetch('api/flights/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(flightInfo),
+        }).then((response) => {
+            if (response.ok) {
+                setIsAddLoading(false);
+                setIsAddFlightActive(false);
+
+                setPlaneForFlight('');
+                setSelectedDepartureDate('');
+                setSelectedArrivalDate('');
+                setDepartureAirport('');
+                setArrivalAirport('');
+
+                showMessage(true, 'The flight has been added successfully');
+            }
+            return response.json();
+        }).then((data) => {
+            if (data.errors) {
+                throw new Error(data.errors[0].errorMessage); 
+            } else if (data.errorMessage) {
+                throw new Error(data.errorMessage);
+            }
+        }).catch(error => {
+            setIsAddLoading(false);
+
+            showMessage(false, error.name == "TypeError" ? "The connection could not be established." : error.message);
+        })
+    };
+
+    const handleSaveAddClick = async () => {
+        await sendAddFlightRequest()
+        refreshFlights();
+    }
+
+    const sendUpdateFlightRequest = () => {
+        setIsUpdateLoading(true);
+
+        const departureTimestamp = selectedModifyDepartureDate.toISOString();
+        const arrivalTimestamp = selectedModifyArrivalDate.toISOString();
+
+        const newFlightInfo = {
+            id: updatedFlightId.trim(),
+            planeName: modifyFlightPlane.trim(),
+            departureDate: departureTimestamp,
+            arrivalDate: arrivalTimestamp,
+        };
+
+        return fetch('api/flights/update', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newFlightInfo),
+        }).then((response) => {
+            if (response.ok) {
+                setIsUpdateLoading(false);
+                setIsUpdateFlightActive(false);
+
+                setUpdatedFlightId('');
+                setSelectedModifyDepartureDate('');
+                setSelectedModifyArrivalDate('');
+                setModifiyFlightPlane('');
+
+                showMessage(true, 'The flight has been updated successfully');
+            }
+            return response.json();
+        }).then((data) => {
+            if (data.errors) {
+                throw new Error(data.errors[0].errorMessage); 
+            } else if (data.errorMessage) {
+                throw new Error(data.errorMessage);
+            }
+        }).catch(error => {
+            setIsAddLoading(false);
+
+            showMessage(false, error.name == "TypeError" ? "The connection could not be established." : error.message);
+        })
+    };
+
+    const handleSaveUpdateClick = async () => {
+        await sendUpdateFlightRequest()
+        refreshFlights();
+    }
+
+    const sendDeleteFlightRequest = () => {
+        setIsDeleteLoading(true);
+
+        const deletedFlightInfo = {
+            id: deletedFlightId.trim(),
+        };
+
+        return fetch('api/flights/delete', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(deletedFlightInfo),
+        }).then((response) => {
+            if (response.status === 200 || response.status === 204) {
+                setIsDeleteLoading(false);
+                setIsDeleteFlightActive(false);
+
+                setDeletedFlightId('');
+
+                showMessage(true, 'The flight has been deleted successfully');
+            } else {
+                return response.json();
+            }
+
+        }).then((data) => {
+            if(data) {
+                if (data.errors) {
+                    throw new Error(data.errors[0].errorMessage); 
+                } else if (data.errorMessage) {
+                    throw new Error(data.errorMessage);
+                }
+            }
+        }).catch(error => {
+            setIsDeleteLoading(false);
+
+            showMessage(false, error.name == "TypeError" ? "The connection could not be established." : error.message);
+        })
+    };
+
+    const handleSaveDeleteClick = async () => {
+        await sendDeleteFlightRequest()
+        refreshFlights();
+    }
+
+    const handleDepartureDateChange = (newDate) => {
+        setSelectedDepartureDate(newDate);
+    };
+
+    const handleArrivalDateChange = (newDate) => {
+        setSelectedArrivalDate(newDate);
+    };
+
+    const handleModifyDepartureDateChange = (newDate) => {
+        setSelectedModifyDepartureDate(newDate);
+    };
+
+    const handleModifyArrivalDateChange = (newDate) => {
+        setSelectedModifyArrivalDate(newDate);
+    };
+
+ 
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -57,10 +242,9 @@ export default function FlightSection({ showMessage }) {
 
                         <Grid item>
                             <Autocomplete
-                                disablePortal
                                 fullWidth
-                                options={options}
-                                getOptionLabel={(option) => option.label}
+                                onChange={(event, value) => setPlaneForFlight(value || '')}
+                                options={allPlanesName || []}
                                 renderInput={(params) => (
                                     <TextField {...params} label="Plane" variant="outlined" />
                                 )}
@@ -69,10 +253,9 @@ export default function FlightSection({ showMessage }) {
 
                         <Grid item>
                             <Autocomplete
-                                disablePortal
                                 fullWidth
-                                options={options}
-                                getOptionLabel={(option) => option.label}
+                                onChange={(event, value) => setDepartureAirport(value || '')}
+                                options={allAirportsName || []}
                                 renderInput={(params) => (
                                     <TextField {...params} label="Departure Airport" variant="outlined" />
                                 )}
@@ -87,19 +270,18 @@ export default function FlightSection({ showMessage }) {
                             </Grid>
                             <Grid item>
                                 <DateTimePicker
-                                    //defaultValue={today}
-                                    //minDate={tomorrow}
                                     views={['year', 'month', 'day', 'hours', 'minutes']}
+                                    value={selectedDepartureDate}
+                                    onChange={handleDepartureDateChange}
                                 />
                             </Grid>
                         </Grid>
 
                         <Grid item>
                             <Autocomplete
-                                disablePortal
                                 fullWidth
-                                options={options}
-                                getOptionLabel={(option) => option.label}
+                                onChange={(event, value) => setArrivalAirport(value || '')}
+                                options={allAirportsName || []}
                                 renderInput={(params) => (
                                     <TextField {...params} label="Arrival Airport" variant="outlined" />
                                 )}
@@ -114,9 +296,9 @@ export default function FlightSection({ showMessage }) {
                             </Grid>
                             <Grid item>
                                 <DateTimePicker
-                                    //defaultValue={today}
-                                    //minDate={tomorrow}
                                     views={['year', 'month', 'day', 'hours', 'minutes']}
+                                    value={selectedArrivalDate}
+                                    onChange={handleArrivalDateChange}
                                 />
                             </Grid>
                         </Grid>
@@ -133,9 +315,10 @@ export default function FlightSection({ showMessage }) {
 
                             <Grid item>
                                 <Button
-                                    //disabled={currentPassword === '' || newPassword === '' || confirmNewPassword === ''}
+                                    disabled={planeForFlight === '' || departureAirport === '' || arrivalAirport === '' ||
+                                        selectedDepartureDate === '' || selectedArrivalDate === ''}
                                     variant="contained"
-                                //onClick={handleSaveAddClick}
+                                    onClick={handleSaveAddClick}
                                 >
                                     Add
                                 </Button>
@@ -152,6 +335,12 @@ export default function FlightSection({ showMessage }) {
                     </Grid>
                 )}
 
+                {isAddLoading &&
+                    <Grid item xs>
+                        <LinearProgress />
+                    </Grid>
+                }
+
                 {(isUpdateFlightActive) ? (
                     <Grid item container direction="column" gap='12px'>
                         <Grid item>
@@ -162,10 +351,9 @@ export default function FlightSection({ showMessage }) {
 
                         <Grid item>
                             <Autocomplete
-                                disablePortal
                                 fullWidth
-                                options={options}
-                                getOptionLabel={(option) => option.label}
+                                onChange={(event, value) => setUpdatedFlightId(value.split(' ')[0] || '')}
+                                options={allFlightsDetails || []}
                                 renderInput={(params) => (
                                     <TextField {...params} label="Updated Flight" variant="outlined" />
                                 )}
@@ -174,17 +362,16 @@ export default function FlightSection({ showMessage }) {
 
                         <Grid item>
                             <Autocomplete
-                                disablePortal
                                 fullWidth
-                                options={options}
-                                getOptionLabel={(option) => option.label}
+                                onChange={(event, value) => setModifiyFlightPlane(value || '')}
+                                options={allPlanesName}
                                 renderInput={(params) => (
                                     <TextField {...params} label="Modify Plane" variant="outlined" />
                                 )}
                             />
                         </Grid>
 
-                        <Grid item>
+                        {/* <Grid item>
                             <TextField
                                 label="Departure Airport"
                                 variant="outlined"
@@ -192,7 +379,7 @@ export default function FlightSection({ showMessage }) {
                                 InputProps={{ readOnly: true }}
                                 fullWidth
                             />
-                        </Grid>
+                        </Grid> */}
 
                         <Grid item container alignItems='center' gap='13px'>
                             <Grid item>
@@ -202,14 +389,14 @@ export default function FlightSection({ showMessage }) {
                             </Grid>
                             <Grid item>
                                 <DateTimePicker
-                                    //defaultValue={today}
-                                    //minDate={tomorrow}
                                     views={['year', 'month', 'day', 'hours', 'minutes']}
+                                    value={selectedModifyDepartureDate}
+                                    onChange={handleModifyDepartureDateChange}
                                 />
                             </Grid>
                         </Grid>
 
-                        <Grid item>
+                        {/* <Grid item>
                             <TextField
                                 label="Arrival Airport"
                                 variant="outlined"
@@ -217,7 +404,7 @@ export default function FlightSection({ showMessage }) {
                                 InputProps={{ readOnly: true }}
                                 fullWidth
                             />
-                        </Grid>
+                        </Grid> */}
 
                         <Grid item container alignItems='center' gap='47px'>
                             <Grid item>
@@ -227,9 +414,9 @@ export default function FlightSection({ showMessage }) {
                             </Grid>
                             <Grid item>
                                 <DateTimePicker
-                                    //defaultValue={today}
-                                    //minDate={tomorrow}
                                     views={['year', 'month', 'day', 'hours', 'minutes']}
+                                    value={selectedModifyArrivalDate}
+                                    onChange={handleModifyArrivalDateChange}
                                 />
                             </Grid>
                         </Grid>
@@ -246,9 +433,10 @@ export default function FlightSection({ showMessage }) {
 
                             <Grid item>
                                 <Button
-                                    //disabled={currentPassword === '' || newPassword === '' || confirmNewPassword === ''}
+                                    disabled={updatedFlightId === '' || modifyFlightPlane === '' || 
+                                    selectedModifyDepartureDate === '' || selectedModifyArrivalDate === ''}
                                     variant="contained"
-                                //onClick={handleSaveAddClick}
+                                    onClick={handleSaveUpdateClick}
                                 >
                                     Update
                                 </Button>
@@ -265,6 +453,12 @@ export default function FlightSection({ showMessage }) {
                     </Grid>
                 )}
 
+                {isUpdateFlightActive &&
+                    <Grid item xs>
+                        <LinearProgress />
+                    </Grid>
+                }
+
                 {(isDeleteFlightActive) ? (
                     <Grid item container direction="column" gap='12px'>
                         <Grid item>
@@ -274,10 +468,9 @@ export default function FlightSection({ showMessage }) {
                         </Grid>
                         <Grid item>
                             <Autocomplete
-                                disablePortal
                                 fullWidth
-                                options={options}
-                                getOptionLabel={(option) => option.label}
+                                onChange={(event, value) => setDeletedFlightId(value.split(' ')[0] || '')}
+                                options={allFlightsDetails || []}
                                 renderInput={(params) => (
                                     <TextField {...params} label="Deleted Flight" variant="outlined" />
                                 )}
@@ -296,9 +489,9 @@ export default function FlightSection({ showMessage }) {
 
                             <Grid item>
                                 <Button
-                                    //disabled={currentPassword === '' || newPassword === '' || confirmNewPassword === ''}
+                                    disabled={deletedFlightId === ''}
                                     variant="contained"
-                                    //onClick={handleSaveDeleteClick}
+                                    onClick={handleSaveDeleteClick}
                                     color="error">
                                     Delete
                                 </Button>
@@ -314,6 +507,12 @@ export default function FlightSection({ showMessage }) {
                         </Button>
                     </Grid>
                 )}
+
+                {isDeleteFlightActive &&
+                    <Grid item xs>
+                        <LinearProgress />
+                    </Grid>
+                }
             </Grid>
 
         </LocalizationProvider>

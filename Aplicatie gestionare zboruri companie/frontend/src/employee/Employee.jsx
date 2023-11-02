@@ -16,6 +16,7 @@ export default function Employee() {
 
   const [allPlanesName, setAllPlanesName] = useState(null);
   const [allAirportsName, setAllAirportsName] = useState(null);
+  const [allFlightsDetails, setAllFlightsDetails] = useState(null);
 
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -87,6 +88,25 @@ export default function Employee() {
     });
   }
 
+  const getAllFlightsDetails = () => {
+
+    fetch('api/flights/details', {
+      method: 'GET'
+    }).then((response) => {
+      return response.json();
+    }).then((data) => {
+      if (data.errorMessage) {
+        throw new Error(data.errorMessage);
+      }
+
+      setAllFlightsDetails(data);
+    }).catch(error => {
+      setSnackbarMessage(error.message);
+
+      setShowSnackbar(true);
+    });
+  }
+
   /**
   * Fetch user data on component mount
   */
@@ -94,6 +114,7 @@ export default function Employee() {
     getUserCurrentData();
     getAllPlanesName();
     getAllAirportsName();
+    getAllFlightsDetails();
   }, []);
 
   const refreshPlanes = () => {
@@ -102,6 +123,10 @@ export default function Employee() {
 
   const refreshAirports = () => {
     getAllAirportsName();
+  }
+
+  const refreshFlights = () => {
+    getAllFlightsDetails();
   }
 
   return (
@@ -113,11 +138,12 @@ export default function Employee() {
         </Grid>
       </UserContext.Provider>
 
-      <CompanyContext.Provider value={{ allPlanesName, allAirportsName }}>
+      <CompanyContext.Provider value={{ allPlanesName, allAirportsName, allFlightsDetails }}>
         <Grid item container>
           <EmployeeCard 
             refreshPlanes={refreshPlanes} 
             refreshAirports={refreshAirports}
+            refreshFlights={refreshFlights}
           />
         </Grid>
       </CompanyContext.Provider>

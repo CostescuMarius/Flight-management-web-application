@@ -9,9 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.flights.account.dto.DeleteAirportDto;
 import com.flights.account.exception.AccountException;
-import com.flights.account.exception.AirportException;
 import com.flights.account.exception.InternalErrorCode;
-import com.flights.account.exception.PlaneException;
 import com.flights.account.messages.Message;
 import com.flights.account.model.Airport;
 import com.flights.account.repository.AirportRepository;
@@ -30,9 +28,6 @@ public class AirportService {
 		if(airportRepository.existsByName(newAirport.getName())) {
             throw new AccountException(Message.AIRPORT_ALREADY_EXISTS, HttpStatus.CONFLICT, InternalErrorCode.EMAIL_ALREADY_EXISTS);
         }
-		
-		newAirport.setName(newAirport.getName());
-		newAirport.setLocation(newAirport.getLocation());
 		
 		newAirport = airportRepository.save(newAirport);
 		
@@ -62,5 +57,21 @@ public class AirportService {
         }
 
         return airportsName;
+    }
+    
+    public Airport getAirportById(int id) {
+    	if(!airportRepository.existsById(id)) {
+    		throw new AccountException(Message.AIRPORT_NOT_FOUND, HttpStatus.CONFLICT, InternalErrorCode.EMAIL_ALREADY_EXISTS);
+    	}
+    	
+    	return airportRepository.findById(id);
+    }
+    
+    public Airport getAirportByName(String name) {
+    	if(!airportRepository.existsByName(name)) {
+    		throw new AccountException(Message.AIRPORT_NOT_FOUND, HttpStatus.CONFLICT, InternalErrorCode.EMAIL_ALREADY_EXISTS);
+    	}
+    	
+    	return airportRepository.findByName(name);
     }
 }

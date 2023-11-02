@@ -104,7 +104,9 @@ public enum Message {
 	
 	AIRPORT_ALREADY_EXISTS("AIRPORT_ALREADY_EXISTS", "An airport with this name already exists."),
 	
-	AIRPORT_NOT_FOUND("AIRPORT_NOT_FOUND", "The airport with this name was not found.");
+	AIRPORT_NOT_FOUND("AIRPORT_NOT_FOUND", "The airport with this name was not found."),
+	
+	FLIGHT_NOT_FOUND("FLIGHT_NOT_FOUND", "The flight was not found.");
 
 	/**
 	 * Unique identifier corresponding to each type of message.

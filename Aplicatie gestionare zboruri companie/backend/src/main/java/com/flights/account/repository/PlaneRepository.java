@@ -10,6 +10,7 @@ public interface PlaneRepository extends JpaRepository<Plane, Integer> {
 	boolean existsByName(String name);
 	
 	public Plane findByName(String name);
+	public Plane findById(int id);
 	
 	public List<Plane> findAll();
 }
