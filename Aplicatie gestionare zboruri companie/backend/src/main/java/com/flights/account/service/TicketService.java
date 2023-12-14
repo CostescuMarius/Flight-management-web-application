@@ -1,5 +1,7 @@
 package com.flights.account.service;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.flights.account.dto.BuyTicketDto;
 import com.flights.account.dto.DeleteTicketDto;
 import com.flights.account.dto.UpdateTicketDto;
 import com.flights.account.exception.AccountException;
@@ -65,4 +68,22 @@ public class TicketService {
 
         return ticketDetails;
     }
+
+
+	public List<Ticket> checkAvailableTickets(BuyTicketDto buyTicket) {
+		String departureAirport = buyTicket.getDepartureAirportName();
+        String arrivalAirport = buyTicket.getArrivalAirportName();
+        LocalDate date = buyTicket.getDepartureDate().toLocalDateTime().toLocalDate();
+        
+        List<Ticket> availableTickets = new ArrayList<Ticket>();
+        
+		for(Ticket ticket : ticketRepository.findAll()) {
+			if(ticket.getFlight().getDepartureAirport().getName().equals(departureAirport) &&
+					ticket.getFlight().getArrivalAirport().getName().equals(arrivalAirport) &&
+					ticket.getFlight().getDepartureDate().toLocalDateTime().toLocalDate().equals(date)) {
+				availableTickets.add(ticket);
+			}
+		}
+		return availableTickets;
+	}
 }

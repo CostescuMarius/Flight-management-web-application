@@ -6,6 +6,8 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import UserContext from '../context/UserContext.jsx';
 
 import { useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
+
 /**
  * Header component displaying the application's logo and title.
 
@@ -64,15 +66,15 @@ function AppHeader({ showLogoutButton }) {
                             <Grid item>
                                 {/* Helper text */}
                                 <Tooltip title="Open menu">
-                                    <IconButton onClick={handleOpenUserMenu} sx = {{borderRadius: '0px'}}>
+                                    <IconButton onClick={handleOpenUserMenu} sx={{ borderRadius: '0px' }}>
                                         <Grid container alignItems="center" style={{ borderLeft: "2px solid #A9A9A9" }}>
-                                            <Grid item style={{marginLeft: '7px'}}>
+                                            <Grid item style={{ marginLeft: '7px' }}>
                                                 {/* Current user name */}
-                                                <Typography variant="body1" style={{ fontSize:'15px', color: 'black' }}>
+                                                <Typography variant="body1" style={{ fontSize: '15px', color: 'black' }}>
                                                     {currentUserData.name}
-                                                 </Typography>
+                                                </Typography>
                                             </Grid>
-                                            <Grid item style={{marginRight : '5px'}}>
+                                            <Grid item style={{ marginRight: '5px' }}>
                                                 <ArrowDropDownIcon />
                                             </Grid>
                                             <Grid item>
@@ -102,14 +104,28 @@ function AppHeader({ showLogoutButton }) {
                                     onClose={handleCloseUserMenu}
                                 >
                                     <MenuItem onClick={handleCloseUserMenu} style={{ padding: 0 }}>
-                                        <form action="/logout" method="post">
-                                            {/* Log out button */}
-                                            <Button 
-                                                type="submit" 
-                                                style={{ color: 'black', textTransform: 'none', minWidth: '130px' }}>
-                                                Log out
-                                            </Button>
-                                        </form>
+                                        <Grid container direction='column'>
+                                        <Grid item>
+                                                <Button
+                                                    style={{ color: 'black', textTransform: 'none', minWidth: '130px' }}
+                                                    //component={Link}
+                                                    //to="/profil">
+                                                    >
+                                                    Profile
+                                                </Button>
+                                            </Grid>     
+
+                                            <Grid item>
+                                                <form action="/logout" method="post">
+                                                    {/* Log out button */}
+                                                    <Button
+                                                        type="submit"
+                                                        style={{ color: 'black', textTransform: 'none', minWidth: '130px' }}>
+                                                        Log out
+                                                    </Button>
+                                                </form>
+                                            </Grid>
+                                        </Grid>
                                     </MenuItem>
                                 </Menu>
                             </Grid>

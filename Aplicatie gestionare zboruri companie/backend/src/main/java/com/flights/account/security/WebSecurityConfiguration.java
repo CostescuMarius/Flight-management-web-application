@@ -67,7 +67,9 @@ public class WebSecurityConfiguration {
 		http
 		.csrf(csrf -> csrf.disable())
 		.authorizeHttpRequests(authz->authz
-				.requestMatchers("/api/users/register", "/api/users/me", "/api/users/confirm").permitAll()
+				.requestMatchers("/api/users/register", "/api/users/me", "/api/users/confirm",
+						"/api/users/employee", "/api/users/customer").permitAll()
+				.requestMatchers("/employee").hasAuthority("EMPLOYEE")
 				.anyRequest().authenticated())
 //		.formLogin(form -> form
 //				.loginPage("/login")
@@ -84,7 +86,7 @@ public class WebSecurityConfiguration {
                 .successHandler((request, response, authentication) -> {
                     Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
                     if (roles.contains("CUSTOMER")) {
-                        response.sendRedirect("/profile");
+                        response.sendRedirect("/customer");
                     } else if (roles.contains("EMPLOYEE")) {
                         response.sendRedirect("/employee");
                     } else {
