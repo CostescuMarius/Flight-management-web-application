@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Grid, TextField, Button, Typography, LinearProgress, Autocomplete } from "@mui/material";
+import { Grid, TextField, Button, Typography, LinearProgress, Autocomplete, IconButton } from "@mui/material";
 import AirplaneTicketIcon from '@mui/icons-material/AirplaneTicket';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -9,14 +9,42 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 
 export default function BuyTicketSection({ showMessage }) {
+    const [currentUserData, setCurrentUserData] = useState(null);
+    const [isDataLoadingActive, setIsDataLoadingActive] = useState(true);
+
     const [allAirports, setAllAirports] = useState(null);
 
     const [departureAirport, setDepartureAirport] = useState('');
     const [arrivalAirport, setArrivalAirport] = useState('');
     const [selectedDepartureDate, setSelectedDepartureDate] = useState('');
+    const [wishlist, setWishlist] = useState(null);
 
     const [isCheckLoading, setIsCheckLoading] = useState(false);
     const [ticketsData, setTicketData] = useState(null);
+
+    const getUserCurrentData = () => {
+        setIsDataLoadingActive(true);
+    
+        fetch('api/users/me', {
+          method: 'GET'
+        }).then((response) => {
+          return response.json();
+        }).then((data) => {
+          setIsDataLoadingActive(false);
+    
+          if (data.errorMessage) {
+            throw new Error(data.errorMessage);
+          }
+    
+          setCurrentUserData(data);
+        }).catch(error => {
+          setIsDataLoadingActive(false);
+    
+          setSnackbarMessage(error.message);
+    
+          setShowSnackbar(true);
+        });
+      }
 
     const getAllAirportsName = () => {
 
@@ -37,8 +65,31 @@ export default function BuyTicketSection({ showMessage }) {
         });
     }
 
+    const getWishlist = () => {
+        setIsDataLoadingActive(true);
+    
+        fetch('api/wishlist/all', {
+          method: 'GET'
+        }).then((response) => {
+          return response.json();
+        }).then((data) => {
+          if (data.errorMessage) {
+            throw new Error(data.errorMessage);
+          }
+    
+          setWishlist(data);
+        }).catch(error => {
+    
+          setSnackbarMessage(error.message);
+    
+          setShowSnackbar(true);
+        });
+      }
+
     useEffect(() => {
         getAllAirportsName();
+        getUserCurrentData();
+        getWishlist();
     }, []);
 
     const handleCheckClick = () => {
@@ -80,6 +131,64 @@ export default function BuyTicketSection({ showMessage }) {
     const handleDepartureDateChange = (newDate) => {
         setSelectedDepartureDate(newDate);
     };
+
+    const handleClickAddToWishlist = (ticketId) => {
+        const checkInfo = {
+            userEmail: currentUserData.email,
+            ticketId: ticketId,
+        };
+
+
+        fetch('api/wishlist/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(checkInfo),
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            if (data.errorMessage) {
+                throw new Error(data.errorMessage);
+            }
+
+            setWishlist(data);
+            showMessage(true, "Ticket added to wishlist.");
+        }).catch(error => {
+            setIsCheckLoading(false);
+
+            showMessage(false, error.name == "TypeError" ? "The connection could not be established." : error.message);
+        })
+    }
+
+    const handleClickDeleteFromWishlist = (ticketId) => {
+        const checkInfo = {
+            userEmail: currentUserData.email,
+            ticketId: ticketId,
+        };
+
+
+        fetch('api/wishlist/delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(checkInfo),
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            if (data.errorMessage) {
+                throw new Error(data.errorMessage);
+            }
+
+            setWishlist(data);
+            showMessage(true, "Ticket deleted from wishlist.");
+        }).catch(error => {
+            setIsCheckLoading(false);
+
+            showMessage(false, error.name == "TypeError" ? "The connection could not be established." : error.message);
+        })
+    }
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -201,18 +310,26 @@ export default function BuyTicketSection({ showMessage }) {
                                     </Grid>
 
 
-                                    <Grid item container justifyContent='flex-end' gap='10px' style={{ width: 'auto' }}>
+                                    <Grid item container justifyContent='flex-end' gap='15px' style={{ width: 'auto' }}>
                                         <Grid item>
                                             <Button variant="contained" color="primary">
                                                 BUY
                                             </Button>
                                         </Grid>
 
-                                        <Grid item>
-                                            <Button variant="contained" color="secondary">
-                                                RESERVE
-                                            </Button>
-                                        </Grid>
+                                        {wishlist &&
+                                            <Grid item>
+                                                {wishlist.some(item => item.userEmail === currentUserData.email && item.ticketId === ticket.ticketId) ? (
+                                                    <IconButton color='secondary' onClick={() => handleClickDeleteFromWishlist(ticket.ticketId)}>
+                                                        <FavoriteIcon />
+                                                    </IconButton>
+                                                ) : (
+                                                    <IconButton color='secondary' onClick={() => handleClickAddToWishlist(ticket.ticketId)}>
+                                                        <FavoriteBorderIcon />
+                                                    </IconButton>
+                                                )}
+                                            </Grid>
+                                        }
                                     </Grid>
                                 </Grid>
 

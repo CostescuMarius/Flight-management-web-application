@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AvaliableTicketDto {
+	private int ticketId;
+	
 	private String departureAirportName;
 	
 	private String departureLocation;

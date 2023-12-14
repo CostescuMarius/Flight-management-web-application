@@ -93,6 +93,10 @@ public class UserService {
 		return userRepository.findByEmail(email);
 	}
 	
+	public User getUserById(int id) {
+		return userRepository.findById(id);
+	}
+	
 	/**
 	 * Saves or updates the given user entity in the repository.
 	 * 

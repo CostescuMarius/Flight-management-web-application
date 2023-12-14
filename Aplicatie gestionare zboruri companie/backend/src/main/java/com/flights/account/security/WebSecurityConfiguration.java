@@ -68,7 +68,7 @@ public class WebSecurityConfiguration {
 		.csrf(csrf -> csrf.disable())
 		.authorizeHttpRequests(authz->authz
 				.requestMatchers("/api/users/register", "/api/users/me", "/api/users/confirm",
-						"/api/users/employee", "/api/users/customer").permitAll()
+						"/api/users/employee", "/api/users/customer", "/api/users/wishlist").permitAll()
 				.requestMatchers("/employee").hasAuthority("EMPLOYEE")
 				.anyRequest().authenticated())
 //		.formLogin(form -> form

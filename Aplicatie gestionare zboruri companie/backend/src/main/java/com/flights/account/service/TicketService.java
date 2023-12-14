@@ -1,6 +1,5 @@
 package com.flights.account.service;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +66,10 @@ public class TicketService {
         }
 
         return ticketDetails;
+    }
+    
+    public Ticket getTicketById(int id) {
+    	return ticketRepository.findById(id);
     }
 
 

@@ -74,6 +74,7 @@ public class TicketController {
         	availableTicketDto.setPrice(ticket.getPrice());
         	availableTicketDto.setDepartureDate(ticket.getFlight().getDepartureDate());
         	availableTicketDto.setArrivalDate(ticket.getFlight().getArrivalDate());
+        	availableTicketDto.setTicketId(ticket.getId());
         	availableTicketsDto.add(availableTicketDto);
         }
         
