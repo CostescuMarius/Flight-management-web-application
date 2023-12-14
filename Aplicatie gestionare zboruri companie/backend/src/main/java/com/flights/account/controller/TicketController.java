@@ -51,7 +51,7 @@ public class TicketController {
 
 	@GetMapping("/details")
 	public List<String> getAllTickets() {
-		return ticketService.getAllTickets();
+		return ticketService.getAllTicketsDetails();
 	}
 	
     @PutMapping("/update")
@@ -75,6 +75,30 @@ public class TicketController {
         	availableTicketDto.setDepartureDate(ticket.getFlight().getDepartureDate());
         	availableTicketDto.setArrivalDate(ticket.getFlight().getArrivalDate());
         	availableTicketDto.setTicketId(ticket.getId());
+        	availableTicketDto.setType(ticket.getType());
+        	availableTicketsDto.add(availableTicketDto);
+        }
+        
+        return availableTicketsDto;
+    }
+    
+    
+    @PostMapping("/alltickets")
+    public List<AvaliableTicketDto> getTickets() {
+        List<Ticket> availableTickets = ticketService.getTicketsRaport();
+        
+        List<AvaliableTicketDto> availableTicketsDto = new ArrayList<>();
+        for(Ticket ticket : availableTickets) {
+        	AvaliableTicketDto availableTicketDto = new AvaliableTicketDto();
+        	availableTicketDto.setDepartureAirportName(ticket.getFlight().getDepartureAirport().getName());
+        	availableTicketDto.setDepartureLocation(ticket.getFlight().getDepartureAirport().getLocation());
+        	availableTicketDto.setArrivalAirportName(ticket.getFlight().getArrivalAirport().getName());
+        	availableTicketDto.setArrivalLocation(ticket.getFlight().getArrivalAirport().getLocation());
+        	availableTicketDto.setPrice(ticket.getPrice());
+        	availableTicketDto.setDepartureDate(ticket.getFlight().getDepartureDate());
+        	availableTicketDto.setArrivalDate(ticket.getFlight().getArrivalDate());
+        	availableTicketDto.setTicketId(ticket.getId());
+        	availableTicketDto.setType(ticket.getType());
         	availableTicketsDto.add(availableTicketDto);
         }
         

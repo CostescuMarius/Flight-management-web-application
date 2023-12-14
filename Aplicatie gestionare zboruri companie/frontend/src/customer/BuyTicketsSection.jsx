@@ -9,6 +9,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 
 export default function BuyTicketSection({ showMessage }) {
+    const [selectedCategory, setSelectedCategory] = useState('All');
+
     const [currentUserData, setCurrentUserData] = useState(null);
     const [isDataLoadingActive, setIsDataLoadingActive] = useState(true);
 
@@ -200,6 +202,44 @@ export default function BuyTicketSection({ showMessage }) {
                         </Typography>
                     </Grid>
 
+                    <Grid item container gap='10px'>
+                        <Grid item>
+                            <Button 
+                                variant={selectedCategory === 'all' ? 'contained' : 'outlined'}
+                                color='secondary'
+                                onClick={() => setSelectedCategory('All')}>
+                                All tickets
+                            </Button>
+                        </Grid>
+
+                        <Grid item>
+                            <Button 
+                                variant={selectedCategory === 'full' ? 'contained' : 'outlined'}
+                                color='secondary'
+                                onClick={() => setSelectedCategory('Full')}>
+                                Full
+                            </Button>
+                        </Grid>
+
+                        <Grid item>
+                            <Button
+                                variant={selectedCategory === 'student' ? 'contained' : 'outlined'}
+                                color='secondary'
+                                onClick={() => setSelectedCategory('Student')}>
+                                Student
+                            </Button>
+                        </Grid>
+
+                        <Grid item>
+                            <Button
+                                variant={selectedCategory === 'under1year' ? 'contained' : 'outlined'}
+                                color='secondary'
+                                onClick={() => setSelectedCategory('Child')}>
+                                Under 1 year
+                            </Button>
+                        </Grid>
+                    </Grid>
+
                     <Grid item>
                         <Autocomplete
                             fullWidth
@@ -259,7 +299,9 @@ export default function BuyTicketSection({ showMessage }) {
                     <Grid item container direction="column" gap='20px'>
                         <Typography variant="subtitle1">Available Tickets:</Typography>
 
-                        {ticketsData.map((ticket, index) => (
+                        {ticketsData
+                        .filter(ticket => selectedCategory === 'All' || ticket.type === selectedCategory)
+                        .map((ticket, index) => (
                             <Grid item container
                                 key={index}
                                 direction="column"
@@ -296,6 +338,13 @@ export default function BuyTicketSection({ showMessage }) {
                                         <span style={{ fontWeight: 'bold' }}> Interval </span>
                                         {dayjs(ticket.departureDate).format('HH:mm A')} -
                                         {dayjs(ticket.arrivalDate).format(' HH:mm A')}
+                                    </Typography>
+                                </Grid>
+
+                                <Grid item>
+                                    <Typography variant="body1">
+                                        <span style={{ fontWeight: 'bold' }}> Type </span>
+                                        {ticket.type}
                                     </Typography>
                                 </Grid>
 

@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import AppHeader from "../shared/AppHeader.jsx";
 import { Grid, LinearProgress } from "@mui/material";
 import UserContext from "../context/UserContext.jsx";
+import WishlistCard from "./WishlistCard.jsx";
 
 
 export default function Wishlist() {
@@ -51,6 +52,7 @@ export default function Wishlist() {
         </Grid>}
 
         <Grid item container>
+          <WishlistCard />
         </Grid>
 
       </Grid>

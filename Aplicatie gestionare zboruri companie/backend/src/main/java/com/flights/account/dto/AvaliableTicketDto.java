@@ -25,5 +25,7 @@ public class AvaliableTicketDto {
     
     private Timestamp arrivalDate;
     
+    private String type;
+    
     private double price;
 }

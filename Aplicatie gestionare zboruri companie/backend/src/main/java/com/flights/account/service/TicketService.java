@@ -55,7 +55,7 @@ public class TicketService {
 	    return currentTicket;
 	}
 
-    public List<String> getAllTickets() {
+    public List<String> getAllTicketsDetails() {
     	List<Ticket> tickets = ticketRepository.findAll();
 
     	List<String> ticketDetails = new ArrayList<>();
@@ -67,6 +67,11 @@ public class TicketService {
 
         return ticketDetails;
     }
+    
+    public List<Ticket> getTicketsRaport() {
+    	return ticketRepository.findAll();
+    }
+    
     
     public Ticket getTicketById(int id) {
     	return ticketRepository.findById(id);
