@@ -205,7 +205,7 @@ export default function BuyTicketSection({ showMessage }) {
                     <Grid item container gap='10px'>
                         <Grid item>
                             <Button 
-                                variant={selectedCategory === 'all' ? 'contained' : 'outlined'}
+                                variant={selectedCategory === 'All' ? 'contained' : 'outlined'}
                                 color='secondary'
                                 onClick={() => setSelectedCategory('All')}>
                                 All tickets
@@ -214,7 +214,7 @@ export default function BuyTicketSection({ showMessage }) {
 
                         <Grid item>
                             <Button 
-                                variant={selectedCategory === 'full' ? 'contained' : 'outlined'}
+                                variant={selectedCategory === 'Full' ? 'contained' : 'outlined'}
                                 color='secondary'
                                 onClick={() => setSelectedCategory('Full')}>
                                 Full
@@ -223,7 +223,7 @@ export default function BuyTicketSection({ showMessage }) {
 
                         <Grid item>
                             <Button
-                                variant={selectedCategory === 'student' ? 'contained' : 'outlined'}
+                                variant={selectedCategory === 'Student' ? 'contained' : 'outlined'}
                                 color='secondary'
                                 onClick={() => setSelectedCategory('Student')}>
                                 Student
@@ -232,7 +232,7 @@ export default function BuyTicketSection({ showMessage }) {
 
                         <Grid item>
                             <Button
-                                variant={selectedCategory === 'under1year' ? 'contained' : 'outlined'}
+                                variant={selectedCategory === 'Child' ? 'contained' : 'outlined'}
                                 color='secondary'
                                 onClick={() => setSelectedCategory('Child')}>
                                 Under 1 year
