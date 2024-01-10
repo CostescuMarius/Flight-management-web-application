@@ -36,7 +36,7 @@ public class ShoppingCartController {
 		ShoppingCart existingItem = shoppingCartService.findByUserEmailAndTicketId(newShoppingCartDto.getUserEmail(), newShoppingCartDto.getTicketId());
 		ShoppingCart shoppingCart = shoppingCartConverter.dtoToEntity(newShoppingCartDto);
 		
-		if(existingItem == null) {
+		if(existingItem == null || existingItem.getStatus().equals("ordered")) {
 			shoppingCartService.addTicketToShoppingCart(shoppingCart);
 		} else {
 			existingItem.setCantity(existingItem.getCantity() + 1);
@@ -56,11 +56,12 @@ public class ShoppingCartController {
 	
 	@PostMapping("/plus")
 	public List<ShoppingCartDto> addOneMoreProductInShoppingCart(@RequestBody ShoppingCartDto newShoppingCartDto){
-		ShoppingCart existingItem = shoppingCartService.findByUserEmailAndTicketId(newShoppingCartDto.getUserEmail(), newShoppingCartDto.getTicketId());
+		ShoppingCart existingItem = shoppingCartService.findByUserEmailAndTicketId(newShoppingCartDto.getUserEmail(), 
+				newShoppingCartDto.getTicketId());
 
 		existingItem.setCantity(existingItem.getCantity() + 1);
-	    shoppingCartService.addTicketToShoppingCart(existingItem);	
-		
+		shoppingCartService.addTicketToShoppingCart(existingItem);	
+
 		List<ShoppingCart> shoppingCartProducts = shoppingCartService.getFullShoppingCart();
 		
 		List<ShoppingCartDto> shoppingCartProductsDto = new ArrayList<>();
@@ -75,12 +76,14 @@ public class ShoppingCartController {
 	public List<ShoppingCartDto> removeOneProductFromShoppingCart(@RequestBody ShoppingCartDto newShoppingCartDto){
 		ShoppingCart existingItem = shoppingCartService.findByUserEmailAndTicketId(newShoppingCartDto.getUserEmail(), newShoppingCartDto.getTicketId());
 	    
-	    if(existingItem.getCantity() == 1) {
-	    	shoppingCartService.deleteTicketFromShoppingCart(newShoppingCartDto);
-	    } else {
-	    	existingItem.setCantity(existingItem.getCantity() - 1);
-		    shoppingCartService.addTicketToShoppingCart(existingItem);
-	    }
+		if(existingItem.getStatus().equals("not ordered")) {
+		    if(existingItem.getCantity() == 1) {
+		    	shoppingCartService.deleteTicketFromShoppingCart(newShoppingCartDto);
+		    } else {
+		    	existingItem.setCantity(existingItem.getCantity() - 1);
+			    shoppingCartService.addTicketToShoppingCart(existingItem);
+		    }
+		}
 		
 		List<ShoppingCart> shoppingCartProducts = shoppingCartService.getFullShoppingCart();
 		
@@ -106,6 +109,21 @@ public class ShoppingCartController {
 		
 		return shoppingCartProductsDto;
     }
+    
+    @PostMapping("/buyall")
+    public List<ShoppingCartDto> buyProductsFromShoppingCart(@RequestBody ShoppingCartDto shoppingCartDto) {
+    	
+    	shoppingCartService.buyTicketsFromUserShoppingCart(shoppingCartDto);
+        
+    	List<ShoppingCart> shoppingCartProducts = shoppingCartService.getFullShoppingCart();
+		
+		List<ShoppingCartDto> shoppingCartProductsDto = new ArrayList<>();
+		for(ShoppingCart product : shoppingCartProducts) {
+			shoppingCartProductsDto.add(shoppingCartConverter.entityToDto(product));
+		}
+		
+		return shoppingCartProductsDto;
+    }
 	
 
 	@GetMapping("/all")
@@ -120,6 +138,17 @@ public class ShoppingCartController {
 		return shoppingCartProductsDto;
 	}
     
+	@GetMapping("/history")
+	public List<ShoppingCartDto> getHistoryTransaction() {
+		List<ShoppingCart> shoppingCartProducts = shoppingCartService.getHistoryTransaction();
+		
+		List<ShoppingCartDto> shoppingCartProductsDto = new ArrayList<>();
+		for(ShoppingCart product : shoppingCartProducts) {
+			shoppingCartProductsDto.add(shoppingCartConverter.entityToDto(product));
+		}
+		
+		return shoppingCartProductsDto;
+	}
 }
 	
 	

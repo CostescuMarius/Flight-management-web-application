@@ -26,7 +26,7 @@ public class ShoppingCartConverter {
 		shoppingCartDto.setUserEmail(shoppingCart.getUser().getEmail());
 		shoppingCartDto.setTicketId(shoppingCart.getTicket().getId());
 		shoppingCartDto.setCantity(shoppingCart.getCantity());
-
+		
 		return shoppingCartDto;
 	}
 	
@@ -38,6 +38,7 @@ public class ShoppingCartConverter {
 		shoppingCart.setUser(userService.getUserByEmail(shoppingCartDto.getUserEmail()));
 		shoppingCart.setTicket(ticketService.getTicketById(shoppingCartDto.getTicketId()));
 		shoppingCart.setCantity(shoppingCartDto.getCantity());
+		shoppingCart.setStatus("not ordered");
 		
 		return shoppingCart;
 	}

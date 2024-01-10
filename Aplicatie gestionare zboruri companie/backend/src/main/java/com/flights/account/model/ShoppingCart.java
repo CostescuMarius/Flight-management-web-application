@@ -32,4 +32,7 @@ public class ShoppingCart {
     
     @Column(name = "cantity")
     private int cantity;
+    
+    @Column(name = "status")
+    private String status;
 }

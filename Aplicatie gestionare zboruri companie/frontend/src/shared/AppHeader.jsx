@@ -105,15 +105,46 @@ function AppHeader({ showLogoutButton }) {
                                 >
                                     <MenuItem onClick={handleCloseUserMenu} style={{ padding: 0 }}>
                                         <Grid container direction='column'>
-                                        <Grid item>
+                                            <Grid item>
                                                 <Button
                                                     style={{ color: 'black', textTransform: 'none', minWidth: '130px' }}
-                                                    //component={Link}
-                                                    //to="/profil">
-                                                    >
+                                                    onClick={() => window.location.assign("http://localhost:8080/customer")}>
+                                                    Buy Tickets
+                                                </Button>
+                                            </Grid>
+
+                                            <Grid item>
+                                                <Button
+                                                    style={{ color: 'black', textTransform: 'none', minWidth: '130px' }}
+                                                    onClick={() => window.location.assign("http://localhost:8080/shoppingcart")}>
+                                                    Shopping Cart
+                                                </Button>
+                                            </Grid>
+
+                                            <Grid item>
+                                                <Button
+                                                    style={{ color: 'black', textTransform: 'none', minWidth: '130px' }}
+                                                    onClick={() => window.location.assign("http://localhost:8080/history")}>
+                                                    My Tickets
+                                                </Button>
+                                            </Grid>
+
+
+                                            <Grid item>
+                                                <Button
+                                                    style={{ color: 'black', textTransform: 'none', minWidth: '130px' }}
+                                                    onClick={() => window.location.assign("http://localhost:8080/wishlist")}>
+                                                    Wishlist
+                                                </Button>
+                                            </Grid>
+
+                                            <Grid item>
+                                                <Button
+                                                    style={{ color: 'black', textTransform: 'none', minWidth: '130px' }}
+                                                    onClick={() => window.location.assign("http://localhost:8080/profile")}>
                                                     Profile
                                                 </Button>
-                                            </Grid>     
+                                            </Grid>
 
                                             <Grid item>
                                                 <form action="/logout" method="post">

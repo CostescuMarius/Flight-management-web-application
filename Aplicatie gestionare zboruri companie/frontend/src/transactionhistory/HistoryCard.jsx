@@ -1,26 +1,24 @@
 import React, { useState } from 'react';
-import { Grid, Card, CardContent, Snackbar, Alert, Button } from '@mui/material';
-import ShoppingCartSection from './ShoppingCartSection.jsx';
-import OrderForm from './OrderForm.jsx';
+import { Grid, Card, CardHeader, CardContent, Typography, Link, Snackbar, Alert } from '@mui/material';
+import HistorySection from './HistorySection.jsx';
 
-
-function ShoppingCartCard() {
+/**
+ * Component responsible for rendering the authentication card containing login and registration forms.
+ * 
+ * @returns {JSX.Element} The JSX representation of the AuthCard component.
+ */
+function HistoryCard() {
     const [showSnackbar, setShowSnackbar] = useState(false);
 
     const [snackbarMessage, setSnackbarMessage] = useState('');
 
     const [isSuccessSnackbar, setIsSuccessSnackbar] = useState(false);
-
-    const [currentSection, setCurrentSection] = useState('shoppingCart');
-
-    const switchSection = (section) => {
-        setCurrentSection(section);
-    };
+ 
 
     const handleSnackbarClose = () => {
         setShowSnackbar(false);
     };
-
+    
     const showMessage = (type, content) => {
         setIsSuccessSnackbar(type);
 
@@ -28,8 +26,6 @@ function ShoppingCartCard() {
 
         setShowSnackbar(true);
     }
-
-
 
     return (
         // Main container for the authentication card
@@ -39,13 +35,9 @@ function ShoppingCartCard() {
                 <Card>
                     {/* Render either the login or registration form based on the state */}
                     <CardContent>
-                            {currentSection === 'shoppingCart' ? (
-                                <ShoppingCartSection showMessage={showMessage} switchSection={switchSection} />
-                            ) : (
-                                <OrderForm showMessage={showMessage} switchSection={switchSection}/>
-                            )}
-                            
-        
+                        <Grid container>
+                            <HistorySection showMessage={showMessage}/>
+                        </Grid> 
                     </CardContent>
                 </Card>
             </Grid>
@@ -75,4 +67,4 @@ function ShoppingCartCard() {
     );
 }
 
-export default ShoppingCartCard;
+export default HistoryCard;

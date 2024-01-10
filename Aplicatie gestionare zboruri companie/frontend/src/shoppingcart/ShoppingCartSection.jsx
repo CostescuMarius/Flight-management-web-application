@@ -150,6 +150,8 @@ export default function ShoppingCartSection({ showMessage, switchSection }) {
     })
   }
 
+  let totalPrice = 0;
+  
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Grid item container direction="column" gap='20px'>
@@ -168,7 +170,8 @@ export default function ShoppingCartSection({ showMessage, switchSection }) {
 
               if (isTicketInShoppingCart) {
                 const shoppingCartItem = shoppingCart.find(item => item.ticketId === ticket.ticketId && item.userEmail === currentUserData.email);
-
+                const currentTicketCost = ticket.price * shoppingCartItem.cantity;
+                totalPrice += currentTicketCost;
                 return (
                   <Grid
                     item
@@ -252,7 +255,7 @@ export default function ShoppingCartSection({ showMessage, switchSection }) {
                         <Grid item>
                           <Typography variant="body1">
                             <span style={{ fontWeight: 'bold' }}> Price </span>
-                            <span style={{ color: 'green' }}> {ticket.price}$ </span>
+                            <span style={{ color: 'green' }}> {shoppingCartItem.cantity} x {ticket.price}$ = {ticket.price * shoppingCartItem.cantity}$ </span> 
                           </Typography>
                         </Grid>
                       </Grid>
@@ -286,9 +289,9 @@ export default function ShoppingCartSection({ showMessage, switchSection }) {
                 variant="contained"
                 color="success"
                 endIcon={<NavigateNextIcon />}
-                onClick={() => switchSection("confirmComand")}
+                onClick={() => switchSection("orderForm")}
               >
-                Continue
+                Continue {totalPrice}$
               </Button>
             </Grid>
 
