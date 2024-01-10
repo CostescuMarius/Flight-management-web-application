@@ -1,14 +1,12 @@
 package com.flights.account.model;
 
-import java.util.Set;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,22 +14,22 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "ticket")
+@Table(name = "shopping_cart")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Ticket {
+public class ShoppingCart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "flight_id")
-    private Flight flight;
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    private String type;
-
-    private double price;
+    @ManyToOne
+    @JoinColumn(name = "ticket_id")
+    private Ticket ticket;
     
-    @OneToMany(mappedBy = "ticket")
-    private Set<UserTicket> userTicketsWishlist;
+    @Column(name = "cantity")
+    private int cantity;
 }

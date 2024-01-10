@@ -1,8 +1,5 @@
 package com.flights.account.model;
 
-import java.sql.Timestamp;
-import java.util.Set;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

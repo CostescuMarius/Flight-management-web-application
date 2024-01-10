@@ -15,10 +15,7 @@ import com.flights.account.converter.FlightConverter;
 import com.flights.account.dto.DeleteFlightDto;
 import com.flights.account.dto.FlightDto;
 import com.flights.account.dto.UpdateFlightDto;
-import com.flights.account.dto.UpdateUserNameDto;
-import com.flights.account.dto.UserDto;
 import com.flights.account.model.Flight;
-import com.flights.account.model.User;
 import com.flights.account.service.FlightService;
 
 

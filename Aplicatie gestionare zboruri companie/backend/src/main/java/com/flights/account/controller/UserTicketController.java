@@ -4,22 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.flights.account.converter.AirportConverter;
 import com.flights.account.converter.UserTicketConverter;
-import com.flights.account.dto.AirportDto;
-import com.flights.account.dto.DeleteAirportDto;
 import com.flights.account.dto.UserTicketDto;
-import com.flights.account.model.Airport;
 import com.flights.account.model.UserTicket;
-import com.flights.account.service.AirportService;
 import com.flights.account.service.UserTicketService;
 import com.flights.account.service.ValidationService;
 

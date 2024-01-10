@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Grid, TextField, Button, Typography, LinearProgress, Autocomplete, IconButton } from "@mui/material";
 import AirplaneTicketIcon from '@mui/icons-material/AirplaneTicket';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -192,6 +193,35 @@ export default function BuyTicketSection({ showMessage }) {
         })
     }
 
+    const handleClickAddToShoppingCart = (ticketId) => {
+        const checkInfoShoppingCart = {
+            userEmail: currentUserData.email,
+            ticketId: ticketId,
+            cantity: 1,
+        };
+
+
+        fetch('api/shoppingcart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(checkInfoShoppingCart),
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            if (data.errorMessage) {
+                throw new Error(data.errorMessage);
+            }
+
+            showMessage(true, "Ticket added to shopping cart.");
+        }).catch(error => {
+            setIsCheckLoading(false);
+
+            showMessage(false, error.name == "TypeError" ? "The connection could not be established." : error.message);
+        })
+    }
+
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Grid item container direction="column" gap='20px'>
@@ -361,8 +391,14 @@ export default function BuyTicketSection({ showMessage }) {
 
                                     <Grid item container justifyContent='flex-end' gap='15px' style={{ width: 'auto' }}>
                                         <Grid item>
-                                            <Button variant="contained" color="primary">
-                                                BUY
+                                            <Button 
+                                                variant="contained" 
+                                                color="primary"
+                                                endIcon={<AddShoppingCartIcon />}
+                                                style={{ textTransform: 'none' }}
+                                                onClick={() => handleClickAddToShoppingCart(ticket.ticketId)}
+                                                >
+                                                Add to cart 
                                             </Button>
                                         </Grid>
 

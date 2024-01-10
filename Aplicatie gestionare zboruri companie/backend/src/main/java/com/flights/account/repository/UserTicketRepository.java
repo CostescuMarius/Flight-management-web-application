@@ -4,9 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.flights.account.model.User;
 import com.flights.account.model.UserTicket;
-
 
 
 public interface UserTicketRepository extends JpaRepository<UserTicket, Integer> {
